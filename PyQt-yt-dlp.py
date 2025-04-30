@@ -127,6 +127,12 @@ class MyMainWindow(QMainWindow):
         self.tab2.setup()
         self.tab3.setup()
 
+        # TODO :
+        # ======
+        #
+        # Put the following code into the Tab1, Tab2, etc
+        # classes.
+
         scrollAreaTab1 = QScrollArea()
         scrollAreaTab1.setWidget(self.tab1)
 
