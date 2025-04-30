@@ -284,6 +284,9 @@ class Tab1(QWidget):
         layoutGrid.addWidget(labelSpacer28,  27, 1)
         layoutGrid.addWidget(self.control28, 27, 2)
 
+        # scrollAreaTab1 = QScrollArea()
+        # scrollAreaTab1.setWidget(self.tab1)
+
 
     def processJSON(self, dataJSON):
 

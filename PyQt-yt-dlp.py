@@ -14,7 +14,7 @@ from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget,
                              QLabel,       QPushButton, QFrame,
                              QLineEdit,    QCheckBox,   QGridLayout,
                              QFileDialog,  QScrollArea)
-from PyQt6.QtGui     import QKeySequence
+from PyQt6.QtGui     import (QKeySequence)
 
 # import yt_dlp
 import json
@@ -121,7 +121,16 @@ class MyMainWindow(QMainWindow):
 
         # frameTab1 = QFrame()
 
-        self.tabWidget.addTab(self.tab1,  "1) General                  ")
+        # Setup each of the 16 tabs.
+
+        self.tab1.setup()
+        self.tab2.setup()
+        self.tab3.setup()
+
+        scrollAreaTab1 = QScrollArea()
+        scrollAreaTab1.setWidget(self.tab1)
+
+        self.tabWidget.addTab(scrollAreaTab1, "1) General                  ")
         self.tabWidget.addTab(self.tab2,  "2) Network                  ")
         self.tabWidget.addTab(self.tab3,  "3) Geo-restriction          ")
         self.tabWidget.addTab(self.tab4,  "4) Video Selection          ")
@@ -140,17 +149,8 @@ class MyMainWindow(QMainWindow):
 
         # layoutTab1 = QVBoxLayout()
 
-        # scrollAreaTab1 = QScrollArea()
-        # scrollAreaTab1.setWidget(self.tab1)
-
         # frameTab1.setLayout(layoutTab1)
         # layoutTab1.addWidget(self.tab1)
-
-        # Add content to each of the 16 tabs.
-
-        self.tab1.setup()
-        self.tab2.setup()
-        self.tab3.setup()
 
         # Setup the buttons and the frame that surrounds them.
 
