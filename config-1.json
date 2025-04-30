@@ -1,0 +1,19 @@
+{
+    "General": [
+        {
+            "--help"                   : "True",
+            "--version"                : "False",
+            "--update"                 : "True",
+            "--no-update"              : "False",
+            "--update-to"              : "",
+            "--ignore-errors"          : "True",
+            "--no-abort-on-error"      : "False",
+            "--abort-on-error"         : "True",
+            "--dump-user-agent"        : "False",
+            "--list-extractors"        : "True",
+            "--extractor-descriptions" : "False",
+            "--use-extractors"         : "",
+            "--default-search"         : ""
+        }
+    ]
+}
