@@ -13,14 +13,17 @@ from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget,
                              QVBoxLayout,  QHBoxLayout, QTabWidget,
                              QLabel,       QPushButton, QFrame,
                              QLineEdit,    QCheckBox,   QGridLayout,
-                             QFileDialog)
+                             QFileDialog,  QScrollArea)
 from PyQt6.QtGui     import QKeySequence
 
 
 # Class : Tab1
 # ========================
 
-class Tab1(QWidget):
+# scrollAreaTab1 = QScrollArea()
+# scrollAreaTab1.setWidget(self.tab1)
+
+class Tab1(QScrollArea):
 
     def __init__(self):
 
@@ -31,19 +34,38 @@ class Tab1(QWidget):
 
     def setup(self):
 
+        elementIndex    = 0
+        controlsGeneral = {}
+
+
         # Tab 1 : General Options
 
-        layoutSelf = QVBoxLayout()
-        frameGrid  = QFrame()
-        layoutGrid = QGridLayout()
+        frameTopLevel = QFrame()
+        layoutSelf    = QVBoxLayout()
+        countLabel    = QLabel("Number of options in this group = 28")
+        frameGrid     = QFrame()
+        layoutGrid    = QGridLayout()
 
-        self.setLayout(layoutSelf)
 
+        # Don't set the widget for self here.
+        # This is because the widget has not been
+        # properly setup as yet.
+
+        frameTopLevel.setLayout(layoutSelf)
+        layoutSelf.addWidget(countLabel)
         layoutSelf.addWidget(frameGrid)
         layoutSelf.addStretch()
 
         frameGrid.setLayout(layoutGrid)
+
+        font = countLabel.font()
+        # font.setBold(True)
+        font.setUnderline(True)
+        # font.setBorder(True)
+        countLabel.setFont(font)
         
+        # countLabel.setStyleSheet("border: 1px solid lightgrey;");
+
         labelSpacer1  = QLabel("  :  ")
         labelSpacer2  = QLabel("  :  ")
         labelSpacer3  = QLabel("  :  ")
@@ -72,6 +94,154 @@ class Tab1(QWidget):
         labelSpacer26 = QLabel("  :  ")
         labelSpacer27 = QLabel("  :  ")
         labelSpacer28 = QLabel("  :  ")
+
+
+        # List/array of dictionaries.
+        #
+        # Each element can be accessed by an integer index value.
+
+        optionsList  =  {"-h, --help"              : {"QCheckBox" : "Unchecked"},
+                        "--version"                : {"QCheckBox" : "Unchecked"},
+                        "-U, --update"             : {"QCheckBox" : "Unchecked"},
+                        "--no-update"              : {"QCheckBox" : "Unchecked"},
+                        "--update-to"              : {"QLineEdit" : "[CHANNEL]@[TAG]"},
+                        "-i, --ignore-errors"      : {"QCheckBox" : "Unchecked"},
+                        "--no-abort-on-error"      : {"QCheckBox" : "Unchecked"},
+                        "--abort-on-error"         : {"QCheckBox" : "Unchecked"},
+                        "--dump-user-agent"        : {"QCheckBox" : "Unchecked"},
+                        "--list-extractors"        : {"QCheckBox" : "Unchecked"},
+
+                        "--extractor-descriptions" : {"QCheckBox" : "Unchecked"},
+                        "--use-extractors"         : {"QLineEdit" : "NAMES"},
+                        "--default-search"         : {"QLineEdit" : "PREFIX"},
+                        "--ignore-config"          : {"QCheckBox" : "Unchecked"},
+                        "--no-config-locations"    : {"QCheckBox" : "Unchecked"},
+                        "--config-locations"       : {"QLineEdit" : "PATH"},
+                        "--plugin-dirs"            : {"QLineEdit" : "PATH"},
+                        "--flat-playlist"          : {"QCheckBox" : "Unchecked"},
+                        "--no-flat-playlist"       : {"QCheckBox" : "Unchecked"},
+                        "--live-from-start"        : {"QCheckBox" : "Unchecked"},
+
+                        "--no-live-from-start"     : {"QCheckBox" : "Unchecked"},
+                        "--wait-for-video"         : {"QLineEdit" : "MIN[-MAX]"},
+                        "--no-wait-for-video"      : {"QCheckBox" : "Unchecked"},
+                        "--mark-watched"           : {"QCheckBox" : "Unchecked"},
+                        "--no-mark-watched"        : {"QCheckBox" : "Unchecked"},
+                        "--color"                  : {"QLineEdit" : "[STREAM:]POLICY"},
+                        "--compat-options"         : {"QLineEdit" : "OPTS"},
+                        "--alias"                  : {"QLineEdit" : "ALIASES OPTIONS"}}
+
+        # self.control11 = QCheckBox()
+        # self.control12 = QLineEdit("NAMES")
+        # self.control13 = QLineEdit("PREFIX")
+        # self.control14 = QCheckBox()
+        # self.control15 = QCheckBox()
+        # self.control16 = QLineEdit("PATH")
+        # self.control17 = QLineEdit("PATH")
+        # self.control18 = QCheckBox()
+        # self.control19 = QCheckBox()
+        # self.control20 = QCheckBox()
+
+        # CB : --no-live-from-start            
+        # LE : --wait-for-video MIN[-MAX]      
+        # CB : --no-wait-for-video             
+        # CB : --mark-watched                  
+        # CB : --no-mark-watched               
+        # LE : --color [STREAM:]POLICY
+        # LE : --compat-options OPTS           
+        # LE : --alias ALIASES OPTIONS
+
+        # Get a list of all the keys in the dictionary.
+
+        keys = list(optionsList.keys())
+        print("keys = ", keys)
+
+        for key in keys :
+
+            print("========================================")
+            print("Key = ", key)
+            print("========================================")
+
+            # entry = optionsList[indexList]
+            # print("Entry = ", entry)
+
+            # element will be of the form;
+            #
+            #   {"-h, --help" : {"QCheckBox" : "Unchecked"}}
+            
+            # key = list(element.keys())[0]
+
+            # Get the value from the dictionary which is associated
+            # with the current key.
+
+            value = optionsList[key]
+            print("Value = ", value)
+
+            # Get a list of all the keys in the dictionary.
+
+            controlType = list(value.keys())[0]
+            print("Control type = ", controlType)
+            
+            controlValue = value[controlType]
+            print("Control value = ", controlValue)
+
+            controlLabel = QLabel(key)
+
+            if controlType.lower() == "QCheckBox".lower():
+
+                print(">>>>>>>>>>")
+                print("QCheckBox")
+                print("<<<<<<<<<<")
+
+                controlNew = QCheckBox()
+
+                if controlValue == "Checked".lower() :
+
+                    controlNew.setChecked(True)
+
+                else :
+
+                    controlNew.setChecked(False)
+                
+                controlsGeneral[key] = controlNew
+
+                value = value["QCheckBox"]
+                print("Value = ", value)
+
+            else:
+
+                print(">>>>>>>>>>")
+                print("QLineEdit")
+                print("<<<<<<<<<<")
+
+                controlNew = QLineEdit()
+                controlsGeneral[key] = controlNew
+
+        print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+        print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+        print("Array of controls = ", controlsGeneral)
+        print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+        print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+
+        for element in controlsGeneral:
+
+            print(element)
+
+            key = element.keys()
+
+            print("Keys = ", keys)
+
+            # Create a QLabel from the element's key.
+
+            controlLabel = QLabel(element)
+
+            # Get the control associated with the element's key.
+
+            layoutGrid.addWidget(controlLabel,  elementIndex, 0)
+            layoutGrid.addWidget(labelSpacer1,  elementIndex, 1)
+            layoutGrid.addWidget(self.control1, elementIndex, 2)
+
+            elementIndex = elementIndex + 1
 
         # TODO
         #
@@ -284,8 +454,7 @@ class Tab1(QWidget):
         layoutGrid.addWidget(labelSpacer28,  27, 1)
         layoutGrid.addWidget(self.control28, 27, 2)
 
-        # scrollAreaTab1 = QScrollArea()
-        # scrollAreaTab1.setWidget(self.tab1)
+        self.setWidget(frameTopLevel)
 
 
     def processJSON(self, dataJSON):
@@ -293,7 +462,7 @@ class Tab1(QWidget):
         # Retrieve the child element from the JSON.
 
         try:
-            dataGeneral                = dataJSON["General"][0]
+            dataGeneral                = dataJSON["General"]
         except :
             print("Caught an exception : Probably no General element in JSON")
 

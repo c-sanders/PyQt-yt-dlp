@@ -52,7 +52,7 @@ class MyMainWindow(QMainWindow):
         self.lineEditURL     = QLineEdit("https://www.youtube.com/watch?v=O89_U1gZfYU  https://www.youtube.com/watch?v=slbEMW05Y7A")
 
         self.labelOptions    = QLabel("Config filename :")
-        self.lineEditOptions = QLineEdit("/home/craig/Source code/python/PyQt/yt-dlp-options.json")
+        self.lineEditOptions = QLineEdit("/home/craig/source_code/python/PyQt/yt-dlp-options.json")
 
         self.frameConfigButtons = QFrame()
 
@@ -133,10 +133,10 @@ class MyMainWindow(QMainWindow):
         # Put the following code into the Tab1, Tab2, etc
         # classes.
 
-        scrollAreaTab1 = QScrollArea()
-        scrollAreaTab1.setWidget(self.tab1)
+        # scrollAreaTab1 = QScrollArea()
+        # scrollAreaTab1.setWidget(self.tab1)
 
-        self.tabWidget.addTab(scrollAreaTab1, "1) General                  ")
+        self.tabWidget.addTab(self.tab1,  "1) General                  ")
         self.tabWidget.addTab(self.tab2,  "2) Network                  ")
         self.tabWidget.addTab(self.tab3,  "3) Geo-restriction          ")
         self.tabWidget.addTab(self.tab4,  "4) Video Selection          ")
@@ -212,11 +212,7 @@ class MyMainWindow(QMainWindow):
         print(self.data)
 
         self.tab1.processJSON(self.data)
-
-        try:
-            dataNetwork                = self.data["Network"][0]
-        except :
-            print("Caught an exception : Probably no Network element in JSON")
+        self.tab2.processJSON(self.data)
 
         try:
             dataGeoRestriction         = self.data["GeoRestriction"][0]

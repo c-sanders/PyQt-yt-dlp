@@ -118,31 +118,52 @@ class Tab2(QWidget):
         # Retrieve the child element from the JSON.
 
         try:
-            dataGeoRestriction = dataJSON["GeoRestriction"][0]
+            dataNetwork = dataJSON["Network"]
         except :
-            print("Caught an exception : Probably no GeoRestriction element in JSON")
+            print("Caught an exception : Probably no Network element in JSON")
 
-        print(dataGeoRestriction)
+        print(dataNetwork)
 
-        # print("--help = ",    dataGeneral["--help"])
-        # print("--version = ", dataGeneral["--version"])
+        print("--proxy                    = ", dataNetwork["--proxy"])
+        print("--socket-timeout           = ", dataNetwork["--socket-timeout"])
+        print("--list-impersonate-targets = ", dataNetwork["--list-impersonate-targets"])
 
-        if dataGeneral["--help"] == "True":
-            self.control1.setChecked(True)
+        if dataNetwork["--proxy"]:
+            self.control1.setText(dataNetwork["--proxy"])
         else:
-            self.control1.setChecked(False)
+            self.control1.setText("")
 
-        if dataGeneral["--version"] == "True":
-            self.control2.setChecked(True)
+        if dataNetwork["--socket-timeout"]:
+            self.control2.setText(dataNetwork["--socket-timeout"])
         else:
-            self.control2.setChecked(False)
+            self.control2.setText("")
 
-        if dataGeneral["--update"] == "True":
-            self.control3.setChecked(True)
+        if dataNetwork["--source-address"]:
+            self.control3.setText(dataNetwork["--source-address"])
         else:
-            self.control3.setChecked(False)
+            self.control3.setText("")
 
-        if dataGeneral["--no-update"] == "True":
-            self.control4.setChecked(True)
+        if dataNetwork["--impersonate"]:
+            self.control4.setText(dataNetwork["--impersonate"])
         else:
-            self.control4.setChecked(False)
+            self.control4.setText("")
+
+        if (dataNetwork["--list-impersonate-targets"]).lower() == "true":
+            self.control5.setChecked(True)
+        else:
+            self.control5.setChecked(False)
+
+        if (dataNetwork["--force-ipv4"]).lower() == "true":
+            self.control6.setChecked(True)
+        else:
+            self.control6.setChecked(False)
+
+        if (dataNetwork["--force-ipv6"]).lower() == "true":
+            self.control7.setChecked(True)
+        else:
+            self.control7.setChecked(False)
+
+        if (dataNetwork["--enable-file-urls"]).lower() == "true":
+            self.control8.setChecked(True)
+        else:
+            self.control8.setChecked(False)
