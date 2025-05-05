@@ -212,77 +212,7 @@ class MyMainWindow(QMainWindow):
         print(self.data)
 
         self.tab1.processJSON(self.data)
-        self.tab2.processJSON(self.data)
-
-        try:
-            dataGeoRestriction         = self.data["GeoRestriction"][0]
-        except :
-            print("Caught an exception : Probably no GeoRestriction element in JSON")
-
-        try:
-            dataVideoSelection         = self.data["VideoSelection"][0]
-        except :
-            print("Caught an exception : Probably no VideoSelection element in JSON")
-
-        try:
-            dataDownload               = self.data["Download"][0]
-        except :
-            print("Caught an exception : Probably no Download element in JSON")
-
-        try:
-            dataFilesystem             = self.data["Filesystem"][0]
-        except :
-            print("Caught an exception : Probably no Filesystem element in JSON")
-
-        try:
-            dataThumbnail              = self.data["Thumbnail"][0]
-        except :
-            print("Caught an exception : Probably no Thumbnail element in JSON")
-
-        try:
-            dataInternetShortcut       = self.data["InternetShortcut"][0]
-        except :
-            print("Caught an exception : Probably no InternetShortcut element in JSON")
-
-        try:
-            dataVerbosityAndSimulation = self.data["VerbosityAndSimulation"][0]
-        except :
-            print("Caught an exception : Probably no VerbosityAndSimulation element in JSON")
-
-        try:
-            dataWorkarounds            = self.data["Workarounds"][0]
-        except :
-            print("Caught an exception : Probably no Workarounds element in JSON")
-
-        try:
-            dataVideoFormat            = self.data["VideoFormat"][0]
-        except :
-            print("Caught an exception : Probably no VideoFormat element in JSON")
-
-        try:
-            dataSubtitle               = self.data["Subtitle"][0]
-        except :
-            print("Caught an exception : Probably no Subtitle element in JSON")
-
-        try:
-            dataAuthentication         = self.data["Authentication"][0]
-        except :
-            print("Caught an exception : Probably no Authentication element in JSON")
-
-        try:
-            dataPostProcessing         = self.data["PostProcessing"][0]
-        except :
-            print("Caught an exception : Probably no PostProcessing element in JSON")
-
-        try:
-            dataSponsorBlock           = self.data["SponsorBlock"][0]
-        except :
-            print("Caught an exception : Probably no SponsorBlock element in JSON")
-
-        try:
-            dataExtractor              = self.data["Extractor"][0]
-        except :
-            print("Caught an exception : Probably no Extractor element in JSON")
+        # self.tab2.processJSON(self.data)
 
 
     def connectSignalsToSlots(self):

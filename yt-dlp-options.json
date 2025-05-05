@@ -1,30 +1,45 @@
 {
     "General":
     {
-        "--help"                     : "True",
-        "--version"                  : "False",
-        "--update"                   : "True",
-        "--no-update"                : "False",
+        "-h, --help"                 : "True",
+        "--version"                  : "True",
+        "-U, --update"               : "True",
+        "--no-update"                : "True",
         "--update-to"                : "",
-        "--ignore-errors"            : "True",
-        "--no-abort-on-error"        : "False",
+        "-i, --ignore-errors"        : "True",
+        "--no-abort-on-error"        : "True",
         "--abort-on-error"           : "True",
-        "--dump-user-agent"          : "False",
+        "--dump-user-agent"          : "True",
         "--list-extractors"          : "True",
-        "--extractor-descriptions"   : "False",
+        "--extractor-descriptions"   : "True",
         "--use-extractors"           : "",
-        "--default-search"           : ""
+        "--default-search"           : "",
+        "--ignore-config"            : "True",
+        "--no-config-locations"      : "True",
+        "--config-locations"         : "/home/foo",
+        "--plugin-dirs"              : "/home/foo",
+        "--flat-playlist"            : "True",
+        "--no-flat-playlist"         : "True",
+        "--live-from-start"          : "True",
+        "--no-live-from-start"       : "True",
+        "--wait-for-video"           : "1-2",
+        "--no-wait-for-video"        : "True",
+        "--mark-watched"             : "True",
+        "--no-mark-watched"          : "True",
+        "--color"                    : "[STREAM:]POLICY",
+        "--compat-options"           : "OPTS",
+        "--alias"                    : "ALIASES OPTIONS"
     },
     "Network":
     {
-        "--proxy"                    : "True",
-        "--socket-timeout"           : "False",
-        "--source-address"           : "True",
-        "--impersonate"              : "False",
-        "--list-impersonate-targets" : "",
-        "--ignore-errors"            : "True",
-        "--no-abort-on-error"        : "False",
-        "--abort-on-error"           : "True"
+        "--proxy"                    : "192.168.0.1",
+        "--socket-timeout"           : "5",
+        "--source-address"           : "192.168.0.200",
+        "--impersonate"              : "foo@bar.com",
+        "--list-impersonate-targets" : "True",
+        "--force-ipv4"               : "False",
+        "--force-ipv6"               : "True",
+        "--enable-file-urls"         : "True"
     },
     "Geo-restriction":
     {
