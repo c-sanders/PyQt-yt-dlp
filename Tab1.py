@@ -53,7 +53,7 @@ class Tab1(QScrollArea):
 
         frameTopLevel = QFrame()
         layoutSelf    = QVBoxLayout()
-        countLabel    = QLabel("Number of options in this group = 28")
+        countLabel    = QLabel("Number of options in this group = " + str(len(self.keys)))
         frameGrid     = QFrame()
         layoutGrid    = QGridLayout()
 
@@ -77,7 +77,16 @@ class Tab1(QScrollArea):
         
         # countLabel.setStyleSheet("border: 1px solid lightgrey;");
 
-        print("List of keys = ", self.keys)
+        numKeys = len(self.keys)
+
+        print("::::::::::::::::::::::::::::::::::::::::")
+        print("::::::::::::::::::::::::::::::::::::::::")
+        print("Number of keys in list = ", numKeys)
+        print("::::::::::::::::::::::::::::::::::::::::")
+        print("::::::::::::::::::::::::::::::::::::::::")
+        print("Keys = ", self.keys)
+        print("::::::::::::::::::::::::::::::::::::::::")
+        print("::::::::::::::::::::::::::::::::::::::::")
 
         rowGridLayout = 0
 
@@ -158,7 +167,7 @@ class Tab1(QScrollArea):
         self.setWidget(frameTopLevel)
 
 
-    def processJSON(self, dataJSON):
+    def processJSON(self, dataJSON, optionsCategory):
 
         nameMethod = "Tab1::processJSON" 
 
@@ -168,16 +177,16 @@ class Tab1(QScrollArea):
         # Retrieve the child element from the JSON.
 
         try:
-            dataGeneral                = dataJSON["General"]
+            dataOptions = dataJSON[optionsCategory]
         except :
-            print("Caught an exception : Probably no General element in JSON")
+            print("Caught an exception : Probably no " + optionsCategory + " element in JSON")
 
         print("****************************************")
         print("****************************************")
         print("self.keys = ", self.keys)
         print("****************************************")
         print("****************************************")
-        print("dataGeneral = ", dataGeneral)
+        print("dataOptions = ", dataOptions)
         print("****************************************")
         print("****************************************")
         print("self.controlDictionary = ", self.controlDictionary)
@@ -226,7 +235,7 @@ class Tab1(QScrollArea):
 
                 # $$$$$ Here $$$$$
 
-                userConfig_value = dataGeneral[key]
+                userConfig_value = dataOptions[key]
 
                 print("userConfig_value = ", userConfig_value)
 

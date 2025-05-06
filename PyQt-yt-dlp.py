@@ -13,7 +13,7 @@ from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget,
                              QVBoxLayout,  QHBoxLayout, QTabWidget,
                              QLabel,       QPushButton, QFrame,
                              QLineEdit,    QCheckBox,   QGridLayout,
-                             QFileDialog,  QScrollArea)
+                             QFileDialog,  QScrollArea, QGroupBox)
 from PyQt6.QtGui     import (QKeySequence)
 
 # import yt_dlp
@@ -45,11 +45,16 @@ class MyMainWindow(QMainWindow):
 
         # Filenames and the frame that surrounds them.
 
-        self.frameURL        = QFrame()
+        self.groupBoxURL     = QGroupBox("URL of filename to download :")
+
+        # self.frameURL        = QFrame()
         self.layoutURL       = QVBoxLayout()
 
-        self.labelURL        = QLabel("URL of filename to download :")
+        # self.labelURL        = QLabel("URL of filename to download :")
         self.lineEditURL     = QLineEdit("https://www.youtube.com/watch?v=O89_U1gZfYU  https://www.youtube.com/watch?v=slbEMW05Y7A")
+
+        self.frameConfig     = QFrame()
+        self.layoutConfig    = QVBoxLayout()
 
         self.labelOptions    = QLabel("Config filename :")
         self.lineEditOptions = QLineEdit("/home/craig/source_code/python/PyQt/yt-dlp-options.json")
@@ -80,14 +85,19 @@ class MyMainWindow(QMainWindow):
 
         # Buttons and the frame that surrounds them.
 
-        self.frameButtons   = QFrame()
-        self.layoutButtons  = QHBoxLayout()
-        self.buttonOpen     = QPushButton("Select")
-        self.buttonLoad     = QPushButton("Load")
-        self.buttonSave     = QPushButton("Save")
-        self.buttonClear    = QPushButton("Clear URL")
-        self.buttonDownload = QPushButton("Download")
-        self.buttonExit     = QPushButton("Exit")
+        self.frameButtonsURL     = QFrame()
+        self.frameButtonsConfig  = QFrame()
+        self.frameButtons        = QFrame()
+        self.layoutButtonsURL    = QHBoxLayout()
+        self.layoutButtonsConfig = QHBoxLayout()
+        self.layoutButtons       = QHBoxLayout()
+        self.buttonOpen          = QPushButton("Select")
+        self.buttonLoad          = QPushButton("Load")
+        self.buttonSave          = QPushButton("Save Config")
+        self.buttonClear         = QPushButton("Clear URL")
+        self.buttonHistory       = QPushButton("History") 
+        self.buttonDownload      = QPushButton("Download")
+        self.buttonExit          = QPushButton("Exit")
 
 
     def setup(self):
@@ -99,20 +109,60 @@ class MyMainWindow(QMainWindow):
 
         # Setup the central pane.
 
-        self.layoutCentral.addWidget(self.frameURL)
+        self.layoutCentral.addWidget(self.groupBoxURL)
+        self.layoutCentral.addWidget(self.frameConfig)
         self.layoutCentral.addWidget(self.frameTabs)
         self.layoutCentral.addWidget(self.frameButtons)
 
+
+        # Setup the horizontal button pane.
+
+        self.frameButtonsURL.setLayout(self.layoutButtonsURL)
+        self.layoutButtonsURL.addWidget(self.buttonClear)
+        self.layoutButtonsURL.addWidget(self.buttonHistory)
+
+        # Setup the horizontal button pane.
+
+        self.frameButtonsConfig.setLayout(self.layoutButtonsConfig)
+        self.layoutButtonsConfig.addWidget(self.buttonOpen)
+        self.layoutButtonsConfig.addWidget(self.buttonLoad)
+        self.layoutButtonsConfig.addWidget(self.buttonSave)
+
         # Setup the URL pane and the frame that surrounds it.
 
-        self.frameURL.setLayout(self.layoutURL)
+        # self.frameURL.setLayout(self.layoutURL)
+        self.groupBoxURL.setLayout(self.layoutURL)
         # self.frameURL.setStyleSheet("border: 1px solid lightgrey;");
-        self.layoutURL.addWidget(self.labelURL)
+        # self.layoutURL.addWidget(self.labelURL)
         self.layoutURL.addWidget(self.lineEditURL)
-        self.layoutURL.addWidget(self.labelOptions)
-        self.layoutURL.addWidget(self.lineEditOptions)
-        self.layoutURL.addWidget(self.buttonOpen)
-        self.layoutURL.addWidget(self.buttonLoad)
+        self.layoutURL.addWidget(self.frameButtonsURL)
+
+        # self.layoutURL.addWidget(self.buttonOpen)
+        # self.layoutURL.addWidget(self.buttonLoad)
+
+        # Setup the Config pane and the frame that surrounds it.
+
+        self.frameConfig.setLayout(self.layoutConfig)
+        self.layoutConfig.addWidget(self.labelOptions)
+        self.layoutConfig.addWidget(self.lineEditOptions)
+        self.layoutConfig.addWidget(self.frameButtonsConfig)
+
+        with open("style.qss", "r") as qssFile :
+
+            style = qssFile.read()
+
+            print("++++++++++++++++++++++++++++++++++++++++")
+            print("++++++++++++++++++++++++++++++++++++++++")
+            print("Stylesheet = ", style)
+            print("++++++++++++++++++++++++++++++++++++++++")
+            print("++++++++++++++++++++++++++++++++++++++++")
+
+            # self.frameConfig.setStyleSheet(style)
+
+        # self.frameURL.setStyleSheet("QFrame {border : 1px solid lightgrey;}")
+        self.frameConfig.setStyleSheet("QFrame {border : 1px solid lightgrey;}")
+        self.labelOptions.setStyleSheet("QFrame {border : none;}")
+        self.frameButtonsConfig.setStyleSheet("QFrame {border : 0px solid grey;}")
 
         # Setup the tabbed pane and the frame that surrounds it.
 
@@ -160,18 +210,19 @@ class MyMainWindow(QMainWindow):
 
         # Setup the buttons and the frame that surrounds them.
 
-        self.frameURL.setStyleSheet("border: 1px solid lightgrey;");
+        # self.frameURL.setStyleSheet("border: 1px solid lightgrey;");
 
         self.frameButtons.setLayout(self.layoutButtons)
-        self.layoutButtons.addWidget(self.buttonClear)
         self.layoutButtons.addWidget(self.buttonDownload)
         self.layoutButtons.addWidget(self.buttonExit)
         
-        self.buttonOpen.setFixedSize(80, 30)
-        self.buttonLoad.setFixedSize(80, 30)
-        self.buttonClear.setFixedSize(80, 30)
-        self.buttonDownload.setFixedSize(80, 30)
-        self.buttonExit.setFixedSize(80, 30)
+        self.buttonHistory.setFixedSize(100, 30)
+        self.buttonOpen.setFixedSize(100, 30)
+        self.buttonLoad.setFixedSize(100, 30)
+        self.buttonSave.setFixedSize(100, 30)
+        self.buttonClear.setFixedSize(100, 30)
+        self.buttonDownload.setFixedSize(100, 30)
+        self.buttonExit.setFixedSize(100, 30)
 
         self.buttonExit.setToolTip("Exit the program.")
         self.buttonExit.setShortcut(QKeySequence("Ctrl+X"))
@@ -211,8 +262,8 @@ class MyMainWindow(QMainWindow):
 
         print(self.data)
 
-        self.tab1.processJSON(self.data)
-        # self.tab2.processJSON(self.data)
+        self.tab1.processJSON(self.data, "General")
+        # self.tab2.processJSON(self.data, "Network")
 
 
     def connectSignalsToSlots(self):

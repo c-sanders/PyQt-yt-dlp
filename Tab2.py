@@ -13,14 +13,28 @@ from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget,
                              QVBoxLayout,  QHBoxLayout, QTabWidget,
                              QLabel,       QPushButton, QFrame,
                              QLineEdit,    QCheckBox,   QGridLayout,
-                             QFileDialog)
+                             QFileDialog,  QScrollArea)
 from PyQt6.QtGui     import QKeySequence
+
+from Options         import listOptionsGeneral;
 
 
 # Class : Tab2
 # ========================
 
-class Tab2(QWidget):
+# scrollAreaTab1 = QScrollArea()
+# scrollAreaTab1.setWidget(self.tab1)
+
+class Tab2(QScrollArea):
+
+    # Get a listing of all the keys in the dictionary.
+    #
+    # This will be returned as a Python list.
+
+    keys = list(listOptionsGeneral.keys())
+
+    controlDictionary = {}
+
 
     def __init__(self):
 
@@ -31,139 +45,233 @@ class Tab2(QWidget):
 
     def setup(self):
 
-        # Tab 2 : Geo-restriction Options
+        rowGridLayout     = 0
+        controlsGeneral   = {}
 
-        layoutSelf = QVBoxLayout()
-        frameGrid  = QFrame()
-        layoutGrid = QGridLayout()
 
-        self.setLayout(layoutSelf)
+        # Tab 2 : General Options
 
+        frameTopLevel = QFrame()
+        layoutSelf    = QVBoxLayout()
+        countLabel    = QLabel("Number of options in this group = 28")
+        frameGrid     = QFrame()
+        layoutGrid    = QGridLayout()
+
+
+        # Don't set the widget for self here.
+        # This is because the widget has not been
+        # properly setup as yet.
+
+        frameTopLevel.setLayout(layoutSelf)
+        layoutSelf.addWidget(countLabel)
         layoutSelf.addWidget(frameGrid)
         layoutSelf.addStretch()
 
         frameGrid.setLayout(layoutGrid)
+
+        font = countLabel.font()
+        # font.setBold(True)
+        font.setUnderline(True)
+        # font.setBorder(True)
+        countLabel.setFont(font)
         
-        labelSpacer1  = QLabel("  :  ")
-        labelSpacer2  = QLabel("  :  ")
-        labelSpacer3  = QLabel("  :  ")
-        labelSpacer4  = QLabel("  :  ")
-        labelSpacer5  = QLabel("  :  ")
-        labelSpacer6  = QLabel("  :  ")
-        labelSpacer7  = QLabel("  :  ")
-        labelSpacer8  = QLabel("  :  ")
+        # countLabel.setStyleSheet("border: 1px solid lightgrey;");
 
-        # TODO
-        #
-        # Rename these to something more appropriate.
-        #
-        #   - control
+        print("List of keys = ", self.keys)
 
-        # CB : --geo-verification-proxy URL
-        # CB : --xff VALUE
+        rowGridLayout = 0
 
-        label1  = QLabel("--proxy URL")
-        label2  = QLabel("--socket-timeout SECONDS")
-        label3  = QLabel("--source-address IP")
-        label4  = QLabel("--impersonate CLIENT[:OS]")
-        label5  = QLabel("--list-impersonate-targets")
-        label6  = QLabel("-4, --force-ipv4")
-        label7  = QLabel("-6, --force-ipv6")
-        label8  = QLabel("--enable-file-urls")
+        for key in self.keys :
 
-        self.control1  = QLineEdit("URL")
-        self.control2  = QLineEdit("SECONDS")
-        self.control3  = QLineEdit("IP")
-        self.control4  = QLineEdit("CLIENT[:OS]")
-        self.control5  = QCheckBox()
-        self.control6  = QCheckBox()
-        self.control7  = QCheckBox()
-        self.control8  = QCheckBox()
+            print("========================================")
+            print("Key           = ", key)
+            print("========================================")
 
-        layoutGrid.addWidget(label1,         0,  0)
-        layoutGrid.addWidget(labelSpacer1,   0,  1)
-        layoutGrid.addWidget(self.control1,  0,  2)
+            # Get the value from the dictionary which is associated
+            # with the current key. The value itself will be another
+            # dictionary.
+            #
+            # The value will be of the form;
+            #
+            #   {"QLineEdit" : "ALIASES OPTIONS"}
 
-        layoutGrid.addWidget(label2,         1,  0)
-        layoutGrid.addWidget(labelSpacer2,   1,  1)
-        layoutGrid.addWidget(self.control2,  1,  2)
+            value = listOptionsGeneral[key]
+            print("Value         = ", value)
 
-        layoutGrid.addWidget(label3,         2,  0)
-        layoutGrid.addWidget(labelSpacer3,   2,  1)
-        layoutGrid.addWidget(self.control3,  2,  2)
+            # Get the key from the sub-dictionary.
 
-        layoutGrid.addWidget(label4,         3,  0)
-        layoutGrid.addWidget(labelSpacer4,   3,  1)
-        layoutGrid.addWidget(self.control4,  3,  2)
+            controlType = list(value.keys())[0]
+            print("Control type  = ", controlType)
+            
+            controlValue = value[controlType]
+            print("Control value = ", controlValue)
 
-        layoutGrid.addWidget(label5,         4,  0)
-        layoutGrid.addWidget(labelSpacer5,   4,  1)
-        layoutGrid.addWidget(self.control5,  4,  2)
+            controlLabel = QLabel(key)
 
-        layoutGrid.addWidget(label6,         5,  0)
-        layoutGrid.addWidget(labelSpacer6,   5,  1)
-        layoutGrid.addWidget(self.control6,  5,  2)
+            if controlType.lower() == "QCheckBox".lower():
 
-        layoutGrid.addWidget(label7,         6,  0)
-        layoutGrid.addWidget(labelSpacer7,   6,  1)
-        layoutGrid.addWidget(self.control7,  6,  2)
+                print(">>>>>>>>>>")
+                print("QCheckBox")
+                print("<<<<<<<<<<")
 
-        layoutGrid.addWidget(label8,         7,  0)
-        layoutGrid.addWidget(labelSpacer8,   7,  1)
-        layoutGrid.addWidget(self.control8,  7,  2)
+                controlNew = QCheckBox()
+
+                if controlValue == "Checked".lower() :
+
+                    controlNew.setChecked(True)
+
+                else :
+
+                    controlNew.setChecked(False)
+                
+                value = value["QCheckBox"]
+                print("Value = ", value)
+
+            else:
+
+                print(">>>>>>>>>>")
+                print("QLineEdit")
+                print("<<<<<<<<<<")
+
+                controlNew = QLineEdit(controlValue)
+
+            # Add a new entry into the dictionary.
+
+            self.controlDictionary[key] = controlNew
+
+            # Add the new control into the Grid layout.
+
+            labelSpacer = QLabel("  :  ")
+
+            layoutGrid.addWidget(controlLabel, rowGridLayout, 0)
+            layoutGrid.addWidget(labelSpacer,  rowGridLayout, 1)
+            layoutGrid.addWidget(controlNew,   rowGridLayout, 2)
+
+            rowGridLayout = rowGridLayout + 1
+
+        print("========================================")
+        print("========================================")
+        print("Dictionary of controls", self.controlDictionary)
+        print("========================================")
+        print("========================================")
+
+        self.setWidget(frameTopLevel)
 
 
-    def processJSON(self, dataJSON):
+    def processJSON(self, dataJSON, optionsCategory):
+
+        nameMethod = "Tab1::processJSON" 
+
+
+        print(nameMethod + " : Enter")
 
         # Retrieve the child element from the JSON.
 
         try:
-            dataNetwork = dataJSON["Network"]
+            dataOptions = dataJSON[optionsCategory]
         except :
-            print("Caught an exception : Probably no Network element in JSON")
+            print("Caught an exception : Probably no " + optionsCategory + " element in JSON")
 
-        print(dataNetwork)
+        print("****************************************")
+        print("****************************************")
+        print("self.keys = ", self.keys)
+        print("****************************************")
+        print("****************************************")
+        print("dataOptions = ", dataOptions)
+        print("****************************************")
+        print("****************************************")
+        print("self.controlDictionary = ", self.controlDictionary)
+        print("****************************************")
+        print("****************************************")
 
-        print("--proxy                    = ", dataNetwork["--proxy"])
-        print("--socket-timeout           = ", dataNetwork["--socket-timeout"])
-        print("--list-impersonate-targets = ", dataNetwork["--list-impersonate-targets"])
+        # print("--help = ",    dataGeneral["--help"])
+        # print("--version = ", dataGeneral["--version"])
 
-        if dataNetwork["--proxy"]:
-            self.control1.setText(dataNetwork["--proxy"])
-        else:
-            self.control1.setText("")
+        for key in self.keys :
+            
+            masterConfig_value    = ""
+            controlCurrent_object = ""
 
-        if dataNetwork["--socket-timeout"]:
-            self.control2.setText(dataNetwork["--socket-timeout"])
-        else:
-            self.control2.setText("")
 
-        if dataNetwork["--source-address"]:
-            self.control3.setText(dataNetwork["--source-address"])
-        else:
-            self.control3.setText("")
+            print("Key :")
+            print("----*----|----*----|----*----|----*----|")
+            print(key)
+            print("---------|---------|---------|---------|")
 
-        if dataNetwork["--impersonate"]:
-            self.control4.setText(dataNetwork["--impersonate"])
-        else:
-            self.control4.setText("")
+            # Master config : (Stored in the Options.py file)
 
-        if (dataNetwork["--list-impersonate-targets"]).lower() == "true":
-            self.control5.setChecked(True)
-        else:
-            self.control5.setChecked(False)
+            #   - masterConfig_key
+            #   - masterConfig_value  *
+            #   - masterConfig_controlType
+            #   - masterConfig_controlValue
 
-        if (dataNetwork["--force-ipv4"]).lower() == "true":
-            self.control6.setChecked(True)
-        else:
-            self.control6.setChecked(False)
+            # User config   : (Stored in a JSON file)
 
-        if (dataNetwork["--force-ipv6"]).lower() == "true":
-            self.control7.setChecked(True)
-        else:
-            self.control7.setChecked(False)
+            #   - userConfig_key
+            #   - userConfig_value
 
-        if (dataNetwork["--enable-file-urls"]).lower() == "true":
-            self.control8.setChecked(True)
-        else:
-            self.control8.setChecked(False)
+            # GUI control dictionary
+
+            #   - controlCurrent_object  *
+            #   - controlCurrent_value
+
+            # Please note that the current key might not being
+            # used in the JSON config. Therefore, enclose the
+            # following operations in a try-catch block.
+
+            try:
+
+                # Get the value from the JSON config which is
+                # associated with the current key.
+
+                # $$$$$ Here $$$$$
+
+                userConfig_value = dataOptions[key]
+
+                print("userConfig_value = ", userConfig_value)
+
+                # Get the value from the master config which
+                # is associated with the current key.
+
+                masterConfig_value = listOptionsGeneral[key]
+                print("masterConfig_value = ", masterConfig_value)
+
+                # Get the GUI control object which is associated
+                # with the current key.
+
+                controlCurrent_object = self.controlDictionary[key]
+                print("Current GUI control = ", controlCurrent_object)
+
+                # 
+
+                masterConfig_controlType = list(listOptionsGeneral[key].keys())[0]
+                print("Control key       = ", masterConfig_controlType)
+
+                # 
+
+                print("userConfig_value = ", userConfig_value)
+                print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+                print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+
+                if masterConfig_controlType.lower() == "QCheckBox".lower() :
+
+                    print(">>>>> QCheckBox <<<<<")
+
+                    if userConfig_value.lower() == "True".lower() :
+
+                        controlCurrent_object.setChecked(True)
+
+                    else :
+
+                        controlCurrent_object.setChecked(False)
+
+                # print("Control key value = ", value[controlKey])
+
+                print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+                print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+
+            except:
+
+                print("The current key does not appear to be used in the JSON config.")
+
+        print(nameMethod + " : Exit")

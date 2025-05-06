@@ -30,3 +30,13 @@ listOptionsGeneral = {"-h, --help"               : {"QCheckBox" : "Checked"},
                       "--color"                  : {"QLineEdit" : "[STREAM:]POLICY"},
                       "--compat-options"         : {"QLineEdit" : "OPTS"},
                       "--alias"                  : {"QLineEdit" : "ALIASES OPTIONS"}}
+
+
+listOptionsNetwork = {"--proxy"                    : {"QLineEdit" : "192.168.0.1"},
+                      "--socket-timeout"           : {"QLineEdit" : "5"},
+                      "--source-address"           : {"QLineEdit" : "192.168.0.200"},
+                      "--impersonate"              : {"QLineEdit" : "foo@bar.com"},
+                      "--list-impersonate-targets" : {"QLineEdit" : "True"},
+                      "--force-ipv4"               : {"QLineEdit" : "False"},
+                      "--force-ipv6"               : {"QLineEdit" : "True"},
+                      "--enable-file-urls"         : {"QLineEdit" : "True"}}
