@@ -13,7 +13,7 @@ from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget,
                              QVBoxLayout,  QHBoxLayout, QTabWidget,
                              QLabel,       QPushButton, QFrame,
                              QLineEdit,    QCheckBox,   QGridLayout,
-                             QFileDialog)
+                             QFileDialog,  QGroupBox)
 from PyQt6.QtGui     import QKeySequence
 
 
@@ -28,47 +28,49 @@ class Tab3(QWidget):
 
         super().__init__()
 
+        # Create this class' top level widgets.
 
-    def setup(self):
+        self.layoutSelf = QVBoxLayout()
+        self.groupBox   = QGroupBox("Number of options = 2")
+        self.layoutGrid = QGridLayout()
 
-        # Tab 3 : Geo-restriction Options
 
-        layoutSelf = QVBoxLayout()
-        frameGrid  = QFrame()
-        layoutGrid = QGridLayout()
+    def setupUI(self):
 
-        self.setLayout(layoutSelf)
+        # Set the layout for this tab and then add child widgets into
+        # this layout.
 
-        layoutSelf.addWidget(frameGrid)
-        layoutSelf.addStretch()
+        self.setLayout(self.layoutSelf)
 
-        frameGrid.setLayout(layoutGrid)
-        
-        labelSpacer1  = QLabel("  :  ")
-        labelSpacer2  = QLabel("  :  ")
+        self.layoutSelf.addWidget(self.groupBox)
+        self.layoutSelf.addStretch()
 
-        # TODO
-        #
-        # Rename these to something more appropriate.
-        #
-        #   - control
+        self.setupGroupBox()
 
-        # CB : --geo-verification-proxy URL
-        # CB : --xff VALUE
 
-        label1  = QLabel("--geo-verification-proxy")
-        label2  = QLabel("--xff")
+    def setupGroupBox(self) :
 
-        self.control1  = QLineEdit("URL")
-        self.control2  = QLineEdit("VALUE")
+        # Set the layout for this widget and then add child widgets into
+        # this layout.
 
-        layoutGrid.addWidget(label1,         0,  0)
-        layoutGrid.addWidget(labelSpacer1,   0,  1)
-        layoutGrid.addWidget(self.control1,  0,  2)
+        # - Set the layout for this class of widget.
 
-        layoutGrid.addWidget(label2,         1,  0)
-        layoutGrid.addWidget(labelSpacer2,   1,  1)
-        layoutGrid.addWidget(self.control2,  1,  2)
+        self.groupBox.setLayout(self.layoutGrid)
+
+        # - Add the child widgets into this layout.
+
+        self.addChildWidgetsToLayout()
+
+
+    def addChildWidgetsToLayout(self) :
+
+        self.layoutGrid.addWidget(QLabel("--geo-verification-proxy"), 0,  0)
+        self.layoutGrid.addWidget(QLabel("  :  "),                    0,  1)
+        self.layoutGrid.addWidget(QLineEdit("URL"),                   0,  2)
+
+        self.layoutGrid.addWidget(QLabel("--xff"),                    1,  0)
+        self.layoutGrid.addWidget(QLabel("  :  "),                    1,  1)
+        self.layoutGrid.addWidget(QLineEdit("VALUE"),                 1,  2)
 
 
     def processJSON(self, dataJSON):

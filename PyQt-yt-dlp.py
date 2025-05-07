@@ -13,8 +13,9 @@ from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget,
                              QVBoxLayout,  QHBoxLayout, QTabWidget,
                              QLabel,       QPushButton, QFrame,
                              QLineEdit,    QCheckBox,   QGridLayout,
-                             QFileDialog,  QScrollArea, QGroupBox)
-from PyQt6.QtGui     import (QKeySequence)
+                             QFileDialog,  QScrollArea, QGroupBox,
+                             QMenu)
+from PyQt6.QtGui     import (QKeySequence, QAction)
 
 # import yt_dlp
 import json
@@ -53,7 +54,7 @@ class MyMainWindow(QMainWindow):
         # self.labelURL        = QLabel("URL of filename to download :")
         self.lineEditURL     = QLineEdit("https://www.youtube.com/watch?v=O89_U1gZfYU  https://www.youtube.com/watch?v=slbEMW05Y7A")
 
-        self.frameConfig     = QFrame()
+        self.frameConfig     = QGroupBox("yt-dlp config :")
         self.layoutConfig    = QVBoxLayout()
 
         self.labelOptions    = QLabel("Config filename :")
@@ -63,8 +64,8 @@ class MyMainWindow(QMainWindow):
 
         # Tabbed widget and the frame that surrounds it.
 
-        self.frameTabs      = QFrame()
-        self.layoutTabs     = QVBoxLayout()
+        # self.frameTabs      = QFrame()
+        # self.layoutTabs     = QVBoxLayout()
         self.tabWidget      = QTabWidget()
         self.tab1           = Tab1.Tab1()
         self.tab2           = Tab2.Tab2()
@@ -98,6 +99,7 @@ class MyMainWindow(QMainWindow):
         self.buttonHistory       = QPushButton("History") 
         self.buttonDownload      = QPushButton("Download")
         self.buttonExit          = QPushButton("Exit")
+        # self.exitAction          = 
 
 
     def setup(self):
@@ -107,11 +109,15 @@ class MyMainWindow(QMainWindow):
 
         self.widgetCentral.setLayout(self.layoutCentral)
 
+        # Setup the menu bar.
+
+        self.create_menu_bar()
+
         # Setup the central pane.
 
         self.layoutCentral.addWidget(self.groupBoxURL)
         self.layoutCentral.addWidget(self.frameConfig)
-        self.layoutCentral.addWidget(self.frameTabs)
+        # self.layoutCentral.addWidget(self.frameTabs)
         self.layoutCentral.addWidget(self.frameButtons)
 
 
@@ -146,18 +152,9 @@ class MyMainWindow(QMainWindow):
         self.layoutConfig.addWidget(self.labelOptions)
         self.layoutConfig.addWidget(self.lineEditOptions)
         self.layoutConfig.addWidget(self.frameButtonsConfig)
+        self.layoutConfig.addWidget(self.tabWidget)
 
-        with open("style.qss", "r") as qssFile :
-
-            style = qssFile.read()
-
-            print("++++++++++++++++++++++++++++++++++++++++")
-            print("++++++++++++++++++++++++++++++++++++++++")
-            print("Stylesheet = ", style)
-            print("++++++++++++++++++++++++++++++++++++++++")
-            print("++++++++++++++++++++++++++++++++++++++++")
-
-            # self.frameConfig.setStyleSheet(style)
+        # self.frameConfig.setStyleSheet(style)
 
         # self.frameURL.setStyleSheet("QFrame {border : 1px solid lightgrey;}")
         self.frameConfig.setStyleSheet("QFrame {border : 1px solid lightgrey;}")
@@ -166,16 +163,16 @@ class MyMainWindow(QMainWindow):
 
         # Setup the tabbed pane and the frame that surrounds it.
 
-        self.frameTabs.setLayout(self.layoutTabs)
-        self.layoutTabs.addWidget(self.tabWidget)
+        # self.frameTabs.setLayout(self.layoutTabs)
+        # self.layoutTabs.addWidget(self.tabWidget)
 
         # frameTab1 = QFrame()
 
         # Setup each of the 16 tabs.
 
-        self.tab1.setup()
-        self.tab2.setup()
-        self.tab3.setup()
+        self.tab1.setupUI()
+        # self.tab2.setupUI()
+        self.tab3.setupUI()
 
         # TODO :
         # ======
@@ -230,6 +227,36 @@ class MyMainWindow(QMainWindow):
         self.connectSignalsToSlots()
 
 
+    def create_menu_bar(self) :
+
+        menu_bar = self.menuBar()
+
+        # Setup the File dropdown menu.
+
+        fileMenu = QMenu("&File", self)
+
+        self.quitAction = QAction("&Quit", self)
+        self.exitAction = QAction("&Exit", self)
+
+        # Setup the Edit dropdown menu.
+
+        fileMenu.addAction(self.quitAction)
+        fileMenu.addSeparator()
+        fileMenu.addAction(self.exitAction)
+
+        # Setup the Help dropdown menu.
+
+        helpMenu    = QMenu("&Help", self)
+        aboutAction = QAction("&About", self)
+        # paste_action = QAction("&Paste", self)
+
+        helpMenu.addAction(aboutAction)
+        # edit_menu.addAction(paste_action)
+
+        menu_bar.addMenu(fileMenu)
+        menu_bar.addMenu(helpMenu)
+
+
     def openFileNameDialog(self):
 
         # fileTypes should receive the type of files which were
@@ -270,6 +297,13 @@ class MyMainWindow(QMainWindow):
 
         # Connect signals to slots.
 
+        # Menu bar items.
+
+        self.quitAction.triggered.connect(self.app.closeAllWindows)
+        self.exitAction.triggered.connect(self.app.closeAllWindows)
+
+        # Button items.
+
         self.buttonOpen.clicked.connect(self.openFileNameDialog)
         self.buttonLoad.clicked.connect(self.processJsonFile)
         self.buttonClear.clicked.connect(self.lineEditURL.clear)
@@ -288,6 +322,18 @@ class MyMainWindow(QMainWindow):
 # ===============
 
 app = QApplication(sys.argv)
+
+with open("style.qss", "r") as qssFile :
+
+    style = qssFile.read()
+
+    print("++++++++++++++++++++++++++++++++++++++++")
+    print("++++++++++++++++++++++++++++++++++++++++")
+    print("Stylesheet = ", style)
+    print("++++++++++++++++++++++++++++++++++++++++")
+    print("++++++++++++++++++++++++++++++++++++++++")
+
+    app.setStyleSheet(style)
 
 window = MyMainWindow(app)
 window.setup()
