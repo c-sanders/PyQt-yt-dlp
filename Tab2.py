@@ -13,25 +13,27 @@ from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget,
                              QVBoxLayout,  QHBoxLayout, QTabWidget,
                              QLabel,       QPushButton, QFrame,
                              QLineEdit,    QCheckBox,   QGridLayout,
-                             QFileDialog,  QScrollArea)
-from PyQt6.QtGui     import QKeySequence
+                             QFileDialog,  QScrollArea, QGroupBox)
+from PyQt6.QtGui     import  QKeySequence
 
-from Options         import listOptionsGeneral;
+from Options         import  listOptionsNetwork;
 
 
 # Class : Tab2
 # ========================
 
-# scrollAreaTab1 = QScrollArea()
-# scrollAreaTab1.setWidget(self.tab1)
-
 class Tab2(QScrollArea):
+
+    useOldLayoutCode = False
+
+    numberTab = 2
+    debugTab  = True
 
     # Get a listing of all the keys in the dictionary.
     #
     # This will be returned as a Python list.
 
-    keys = list(listOptionsGeneral.keys())
+    keys = list(listOptionsNetwork.keys())
 
     controlDictionary = {}
 
@@ -42,112 +44,180 @@ class Tab2(QScrollArea):
 
         super().__init__()
 
+        # Create this class's top level widget and layout.
 
-    def setup(self):
+        self.groupBox   = QGroupBox("Number of options = 28")
+        self.layoutGrid = QGridLayout()
 
-        rowGridLayout     = 0
-        controlsGeneral   = {}
+        # Create all the GUI controls and then populate the Control dictionary
+        # with them.
 
-
-        # Tab 2 : General Options
-
-        frameTopLevel = QFrame()
-        layoutSelf    = QVBoxLayout()
-        countLabel    = QLabel("Number of options in this group = 28")
-        frameGrid     = QFrame()
-        layoutGrid    = QGridLayout()
+        self.populateGuiControlsDictionary()
 
 
-        # Don't set the widget for self here.
-        # This is because the widget has not been
-        # properly setup as yet.
+    def setupUI(self):
 
-        frameTopLevel.setLayout(layoutSelf)
-        layoutSelf.addWidget(countLabel)
-        layoutSelf.addWidget(frameGrid)
-        layoutSelf.addStretch()
+        # Additional steps required by this tab.
 
-        frameGrid.setLayout(layoutGrid)
+        # Set the layout for this tab and then add child widgets into
+        # this layout.
 
-        font = countLabel.font()
-        # font.setBold(True)
-        font.setUnderline(True)
-        # font.setBorder(True)
-        countLabel.setFont(font)
-        
-        # countLabel.setStyleSheet("border: 1px solid lightgrey;");
+        # self.setLayout(self.layoutSelf)
 
-        print("List of keys = ", self.keys)
+        # self.groupBox.setLayout(self.layoutSelf)
 
-        rowGridLayout = 0
+        # self.layoutSelf.addWidget(self.groupBox)
+        # self.layoutSelf.addStretch()
+
+        self.setupGroupBox()
+
+
+    def populateGuiControlsDictionary(self) :
+
+        nameMethod = "Tab2::populateGuiControlsDictionary"
+
+
+        numKeys = len(self.keys)
+
+        print("::::::::::::::::::::::::::::::::::::::::")
+        print(nameMethod + " : Enter")
+        print("::::::::::::::::::::::::::::::::::::::::")
+        print("Number of keys in list = ", numKeys)
+        print("::::::::::::::::::::::::::::::::::::::::")
+        print("::::::::::::::::::::::::::::::::::::::::")
+        print("Keys = ", self.keys)
+        print("::::::::::::::::::::::::::::::::::::::::")
+        print("::::::::::::::::::::::::::::::::::::::::")
 
         for key in self.keys :
 
+            # For the current key, create both a label and a
+            # GUI control for it.
+
+            controlLabel, control = self.createGuiLabelAndControlFromKey(key)
+
+            # Add the label and GUI control into the dictionary of GUI
+            # controls.
+
+            self.controlDictionary[key] = control
+
+            numGuiControls = len(self.controlDictionary)
+
             print("========================================")
-            print("Key           = ", key)
+            print("Tab num = ", str(self.numberTab))
+            print("Key             = " + key)
+            print("========================================")
+            print("Control label = " + str(controlLabel))
+            print("Control       = " + str(control))
+            print("-----")
+            print("Text in Control label = " + controlLabel.text())
+            print("========================================")
+            print("Num elements in GUI control dictionary = " + str(len(self.controlDictionary)))
             print("========================================")
 
-            # Get the value from the dictionary which is associated
-            # with the current key. The value itself will be another
-            # dictionary.
-            #
-            # The value will be of the form;
-            #
-            #   {"QLineEdit" : "ALIASES OPTIONS"}
+            if self.debugTab :
 
-            value = listOptionsGeneral[key]
-            print("Value         = ", value)
+                print("")
+                print("Press Enter to continue... ", end="")
+                input()
 
-            # Get the key from the sub-dictionary.
+        # End of for loop.
 
-            controlType = list(value.keys())[0]
-            print("Control type  = ", controlType)
-            
-            controlValue = value[controlType]
-            print("Control value = ", controlValue)
+        print("========================================")
+        print("========================================")
+        print("Dictionary of controls")
+        print("========================================")
+        print("========================================")
 
-            controlLabel = QLabel(key)
+        for key in self.keys :
 
-            if controlType.lower() == "QCheckBox".lower():
+            control = self.controlDictionary[key]
 
-                print(">>>>>>>>>>")
-                print("QCheckBox")
-                print("<<<<<<<<<<")
+            print(str(control))
 
-                controlNew = QCheckBox()
+        # End of for loop.
 
-                if controlValue == "Checked".lower() :
+        # print("")
+        # print("Press Enter to continue... ", end="")
+        # input()
 
-                    controlNew.setChecked(True)
+        print(nameMethod + " : Exit")
 
-                else :
 
-                    controlNew.setChecked(False)
-                
-                value = value["QCheckBox"]
-                print("Value = ", value)
+    def setupGroupBox(self) :
 
-            else:
+        # Add the child widgets into this layout.
 
-                print(">>>>>>>>>>")
-                print("QLineEdit")
-                print("<<<<<<<<<<")
+        self.addChildWidgetsToLayout()
 
-                controlNew = QLineEdit(controlValue)
+        # Set the layout for widget.
 
-            # Add a new entry into the dictionary.
+        if self.useOldLayoutCode :
 
-            self.controlDictionary[key] = controlNew
+            self.groupBox.setLayout(self.layoutGrid)
+
+        else :
+
+            # Create a QVBoxLayout so that we can push all of the controls up.
+
+            vboxLayout = QVBoxLayout()
+
+            frameGrid  = QFrame()
+
+            self.groupBox.setLayout(vboxLayout)
+
+            vboxLayout.addWidget(frameGrid)
+            vboxLayout.addStretch()
+
+            frameGrid.setLayout(self.layoutGrid)
+
+        # Set self.groupBox to be the main widget.
+
+        self.setWidget(self.groupBox)
+        self.setWidgetResizable(True)
+
+
+    def addChildWidgetsToLayout(self) :
+
+        testMethod = False
+
+
+        if testMethod :
+
+            self.layoutGrid.addWidget(QLabel("--geo-verification-proxy"), 0,  0)
+            self.layoutGrid.addWidget(QLabel("  :  "),                    0,  1)
+            self.layoutGrid.addWidget(QLineEdit("URL"),                   0,  2)
+
+            self.layoutGrid.addWidget(QLabel("--farts"),                  1,  0)
+            self.layoutGrid.addWidget(QLabel("  :  "),                    1,  1)
+            self.layoutGrid.addWidget(QLineEdit("SMELLY"),                1,  2)
+
+        # Iterate through the GUI control dictionary and add each of the GUI
+        # controls to the grid layout.
+
+        rowGridLayout = 0
+
+        for key in self.controlDictionary :
+
+            control = self.controlDictionary[key]
+
+            print("========================================")
+            print("Key             = " + key)
+            print("Row grid layout = " + str(rowGridLayout))
+            print("========================================")
+            # print("Control label = " + controlLabel.text())
+            print("Control       = " + str(control))
+            print("========================================")
 
             # Add the new control into the Grid layout.
 
-            labelSpacer = QLabel("  :  ")
-
-            layoutGrid.addWidget(controlLabel, rowGridLayout, 0)
-            layoutGrid.addWidget(labelSpacer,  rowGridLayout, 1)
-            layoutGrid.addWidget(controlNew,   rowGridLayout, 2)
+            self.layoutGrid.addWidget(QLabel(key),     rowGridLayout, 0)
+            self.layoutGrid.addWidget(QLabel("  :  "), rowGridLayout, 1)
+            self.layoutGrid.addWidget(control,         rowGridLayout, 2)
 
             rowGridLayout = rowGridLayout + 1
+
+        # End of for loop.
 
         print("========================================")
         print("========================================")
@@ -155,12 +225,117 @@ class Tab2(QScrollArea):
         print("========================================")
         print("========================================")
 
-        self.setWidget(frameTopLevel)
+        # self.setWidget(self.groupBox)
+
+
+    def getNextControlLabel(self, key) :
+
+        # Get the value from the dictionary which is associated
+        # with the current key. The value itself will be another
+        # dictionary.
+        #
+        # The value will be of the form;
+        #
+        #   {"QLineEdit" : "ALIASES OPTIONS"}
+
+        value = listOptionsNetwork[key]
+        print("Value         = ", value)
+
+        # Get the key from the sub-dictionary.
+
+        controlType = list(value.keys())[0]
+        print("Control type  = ", controlType)
+
+        controlValue = value[controlType]
+        print("Control value = ", controlValue)
+
+        controlLabel = QLabel(key)
+
+
+        return controlLabel
+
+
+    def createGuiLabelAndControlFromKey(self, key) :
+
+        verbose = False
+
+
+        # Get the value from the dictionary which is associated
+        # with the current key.
+        #
+        # The dictionary is named;
+        #
+        #   > listOptionsNetwork
+        #
+        # The value which is returned from the dictionary, will
+        # itself be another dictionary and will be of one of the
+        # following forms;
+        #
+        #   {"QCheckBox" : "Checked"}
+        #   {"QLineEdit" : "ALIASES OPTIONS"}
+
+        controlTypeAndValue = listOptionsNetwork[key]
+
+        if verbose :
+            print("controlTypeAndValue = ", controlTypeAndValue)
+
+        # Get the control type.
+
+        listKeys = list(controlTypeAndValue.keys())
+
+        controlType = listKeys[0]
+
+        if verbose :
+            print("Control type  = ", controlType)
+
+        controlValue = controlTypeAndValue[controlType]
+
+        if verbose :
+            print("Control value = ", controlValue)
+
+        # Create the control label.
+
+        controlLabel = QLabel(key)
+
+        # Ascertain the control type and then create one.
+
+        if controlType.lower() == "QCheckBox".lower():
+
+            if verbose :
+                print(">>>>>>>>>>")
+                print("QCheckBox")
+                print("<<<<<<<<<<")
+
+            control = QCheckBox()
+
+            if controlValue == "Checked".lower() :
+
+                control.setChecked(True)
+
+            else :
+
+                control.setChecked(False)
+
+            value = controlTypeAndValue["QCheckBox"]
+            if verbose :
+                print("Value = ", value)
+
+        else:
+
+            if verbose :
+                print(">>>>>>>>>>")
+                print("QLineEdit")
+                print("<<<<<<<<<<")
+
+            control = QLineEdit(controlValue)
+
+
+        return (controlLabel, control)
 
 
     def processJSON(self, dataJSON, optionsCategory):
 
-        nameMethod = "Tab1::processJSON" 
+        nameMethod = "Tab2::processJSON"
 
 
         print(nameMethod + " : Enter")

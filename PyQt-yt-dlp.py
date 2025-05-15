@@ -20,7 +20,10 @@ from PyQt6.QtGui     import (QKeySequence, QAction)
 # import yt_dlp
 import json
 
-import Tab1, Tab2, Tab3
+import Tab1, Tab2, Tab3, Tab4
+
+
+useStylesheet = False
 
 
 # Class : MyMainWindow
@@ -70,7 +73,7 @@ class MyMainWindow(QMainWindow):
         self.tab1           = Tab1.Tab1()
         self.tab2           = Tab2.Tab2()
         self.tab3           = Tab3.Tab3()
-        self.tab4           = QWidget()
+        self.tab4           = Tab4.Tab4()
         self.tab5           = QWidget()
         self.tab6           = QWidget()
         self.tab7           = QWidget()
@@ -104,7 +107,21 @@ class MyMainWindow(QMainWindow):
 
     def setup(self):
 
-        self.setWindowTitle("PyQt-Example-1")
+        if useStylesheet:
+
+            with open("style.qss", "r") as qssFile :
+
+                style = qssFile.read()
+
+                print("++++++++++++++++++++++++++++++++++++++++")
+                print("++++++++++++++++++++++++++++++++++++++++")
+                print("Stylesheet = ", style)
+                print("++++++++++++++++++++++++++++++++++++++++")
+                print("++++++++++++++++++++++++++++++++++++++++")
+
+                self.setStyleSheet(style)
+
+        self.setWindowTitle("GUI frontend to yt-dlp")
         self.setCentralWidget(self.widgetCentral)
 
         self.widgetCentral.setLayout(self.layoutCentral)
@@ -171,8 +188,9 @@ class MyMainWindow(QMainWindow):
         # Setup each of the 16 tabs.
 
         self.tab1.setupUI()
-        # self.tab2.setupUI()
+        self.tab2.setupUI()
         self.tab3.setupUI()
+        self.tab4.setupUI()
 
         # TODO :
         # ======
@@ -290,7 +308,7 @@ class MyMainWindow(QMainWindow):
         print(self.data)
 
         self.tab1.processJSON(self.data, "General")
-        # self.tab2.processJSON(self.data, "Network")
+        self.tab2.processJSON(self.data, "Network")
 
 
     def connectSignalsToSlots(self):
@@ -322,18 +340,6 @@ class MyMainWindow(QMainWindow):
 # ===============
 
 app = QApplication(sys.argv)
-
-with open("style.qss", "r") as qssFile :
-
-    style = qssFile.read()
-
-    print("++++++++++++++++++++++++++++++++++++++++")
-    print("++++++++++++++++++++++++++++++++++++++++")
-    print("Stylesheet = ", style)
-    print("++++++++++++++++++++++++++++++++++++++++")
-    print("++++++++++++++++++++++++++++++++++++++++")
-
-    app.setStyleSheet(style)
 
 window = MyMainWindow(app)
 window.setup()
