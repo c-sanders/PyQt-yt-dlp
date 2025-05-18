@@ -23,6 +23,9 @@ import json
 import Tab1, Tab2, Tab3, Tab4
 
 
+# Note : The layout looks as expected when the qss stylesheet is NOT
+#        applied to this class.
+
 useStylesheet = False
 
 
@@ -42,34 +45,82 @@ class MyMainWindow(QMainWindow):
         self.createObjects()
 
 
+    def setupUI(self):
+
+        # Setup the widget which will be used as the main widget
+        # by this class.
+
+        self.setupMainWidget()
+
+        self.connectSignalsToSlots()
+
+
     def createObjects(self):
+
+        # The central pane is comprised of the following;
+        #
+        #   - URL pane  (groupBoxURL)
+        #   - Config pane
 
         self.widgetCentral  = QWidget(parent=self)
         self.layoutCentral  = QVBoxLayout()
 
-        # Filenames and the frame that surrounds them.
+        self.createUrlPaneObjects()
+        self.createConfigPaneObjects()
+        self.createButtonPaneObjects()
 
-        self.groupBoxURL     = QGroupBox("URL of filename to download :")
 
-        # self.frameURL        = QFrame()
-        self.layoutURL       = QVBoxLayout()
+    def createUrlPaneObjects(self) :
 
-        # self.labelURL        = QLabel("URL of filename to download :")
-        self.lineEditURL     = QLineEdit("https://www.youtube.com/watch?v=O89_U1gZfYU  https://www.youtube.com/watch?v=slbEMW05Y7A")
+        # The URL pane.
 
-        self.frameConfig     = QGroupBox("yt-dlp config :")
-        self.layoutConfig    = QVBoxLayout()
+        # Top-level container and layout.
 
-        self.labelOptions    = QLabel("Config filename :")
-        self.lineEditOptions = QLineEdit("/home/craig/source_code/python/PyQt/yt-dlp-options.json")
+        self.groupBoxURL      = QGroupBox("URL of filename to download :")
+        self.layoutURL        = QVBoxLayout()
 
-        self.frameConfigButtons = QFrame()
+        # Child widgets.
 
-        # Tabbed widget and the frame that surrounds it.
+        self.lineEditURL      = QLineEdit("https://www.youtube.com/watch?v=O89_U1gZfYU")
+        # self.lineEditURL      = QLineEdit("https://www.youtube.com/watch?v=slbEMW05Y7A")
 
-        # self.frameTabs      = QFrame()
-        # self.layoutTabs     = QVBoxLayout()
+        self.frameButtonsURL  = QFrame()
+        self.layoutButtonsURL = QHBoxLayout()
+
+        self.buttonClear      = QPushButton("Clear URL")
+        self.buttonHistory    = QPushButton("History")
+
+
+    def createConfigPaneObjects(self) :
+
+        # The config pane.
+
+        # Top-level container and layout.
+
+        self.groupBoxConfig      = QGroupBox("yt-dlp config :")
+        self.layoutConfig        = QVBoxLayout()
+
+        # Child widgets.
+
+        self.labelOptions        = QLabel("Config filename :")
+        self.lineEditOptions     = QLineEdit("/home/craig/source_code/python/PyQt/yt-dlp-options.json")
+
+        self.frameButtonsConfig  = QFrame()
+        self.layoutButtonsConfig = QHBoxLayout()
+
+        self.buttonOpen          = QPushButton("Select")
+        self.buttonLoad          = QPushButton("Load")
+        self.buttonSave          = QPushButton("Save Config")
+
+        self.createTabWidgetAndTabs()
+
+
+    def createTabWidgetAndTabs(self) :
+
+        # Tabbed widget and the 16 tabs which it contains.
+
         self.tabWidget      = QTabWidget()
+
         self.tab1           = Tab1.Tab1()
         self.tab2           = Tab2.Tab2()
         self.tab3           = Tab3.Tab3()
@@ -87,29 +138,27 @@ class MyMainWindow(QMainWindow):
         self.tab15          = QWidget()
         self.tab16          = QWidget()
 
-        # Buttons and the frame that surrounds them.
 
-        self.frameButtonsURL     = QFrame()
-        self.frameButtonsConfig  = QFrame()
+    def createButtonPaneObjects(self) :
+
+        # The config pane.
+
+        # Top-level container and layout.
+
         self.frameButtons        = QFrame()
-        self.layoutButtonsURL    = QHBoxLayout()
-        self.layoutButtonsConfig = QHBoxLayout()
         self.layoutButtons       = QHBoxLayout()
-        self.buttonOpen          = QPushButton("Select")
-        self.buttonLoad          = QPushButton("Load")
-        self.buttonSave          = QPushButton("Save Config")
-        self.buttonClear         = QPushButton("Clear URL")
-        self.buttonHistory       = QPushButton("History") 
+
+        # Child widgets.
+
         self.buttonDownload      = QPushButton("Download")
         self.buttonExit          = QPushButton("Exit")
-        # self.exitAction          = 
 
 
-    def setup(self):
+    def applyStylesheet(self) :
 
         if useStylesheet:
 
-            with open("style.qss", "r") as qssFile :
+            with open("stylesheet_1.qss", "r") as qssFile :
 
                 style = qssFile.read()
 
@@ -120,6 +169,9 @@ class MyMainWindow(QMainWindow):
                 print("++++++++++++++++++++++++++++++++++++++++")
 
                 self.setStyleSheet(style)
+
+
+    def setupMainWidget(self) :
 
         self.setWindowTitle("GUI frontend to yt-dlp")
         self.setCentralWidget(self.widgetCentral)
@@ -132,19 +184,23 @@ class MyMainWindow(QMainWindow):
 
         # Setup the central pane.
 
+        self.setupCentralPane()
+
+
+    def setupCentralPane(self) :
+
         self.layoutCentral.addWidget(self.groupBoxURL)
-        self.layoutCentral.addWidget(self.frameConfig)
+        self.layoutCentral.addWidget(self.groupBoxConfig)
         # self.layoutCentral.addWidget(self.frameTabs)
         self.layoutCentral.addWidget(self.frameButtons)
 
-
-        # Setup the horizontal button pane.
+        # Setup the horizontal button pane for the URL.
 
         self.frameButtonsURL.setLayout(self.layoutButtonsURL)
         self.layoutButtonsURL.addWidget(self.buttonClear)
         self.layoutButtonsURL.addWidget(self.buttonHistory)
 
-        # Setup the horizontal button pane.
+        # Setup the horizontal button pane for the yt-dlp config.
 
         self.frameButtonsConfig.setLayout(self.layoutButtonsConfig)
         self.layoutButtonsConfig.addWidget(self.buttonOpen)
@@ -165,7 +221,7 @@ class MyMainWindow(QMainWindow):
 
         # Setup the Config pane and the frame that surrounds it.
 
-        self.frameConfig.setLayout(self.layoutConfig)
+        self.groupBoxConfig.setLayout(self.layoutConfig)
         self.layoutConfig.addWidget(self.labelOptions)
         self.layoutConfig.addWidget(self.lineEditOptions)
         self.layoutConfig.addWidget(self.frameButtonsConfig)
@@ -174,9 +230,13 @@ class MyMainWindow(QMainWindow):
         # self.frameConfig.setStyleSheet(style)
 
         # self.frameURL.setStyleSheet("QFrame {border : 1px solid lightgrey;}")
-        self.frameConfig.setStyleSheet("QFrame {border : 1px solid lightgrey;}")
-        self.labelOptions.setStyleSheet("QFrame {border : none;}")
+        # self.frameConfig.setStyleSheet("QFrame {border : 1px solid pink;}")
+        # self.labelOptions.setStyleSheet("QFrame {border : none;}")
         self.frameButtonsConfig.setStyleSheet("QFrame {border : 0px solid grey;}")
+
+        self.lineEditURL.setStyleSheet("QLineEdit {border : 1px solid;}")
+
+        self.groupBoxConfig.setObjectName("groupBoxConfig")
 
         # Setup the tabbed pane and the frame that surrounds it.
 
@@ -201,14 +261,14 @@ class MyMainWindow(QMainWindow):
         # scrollAreaTab1 = QScrollArea()
         # scrollAreaTab1.setWidget(self.tab1)
 
-        self.tabWidget.addTab(self.tab1,  "1) General                  ")
-        self.tabWidget.addTab(self.tab2,  "2) Network                  ")
-        self.tabWidget.addTab(self.tab3,  "3) Geo-restriction          ")
-        self.tabWidget.addTab(self.tab4,  "4) Video Selection          ")
-        self.tabWidget.addTab(self.tab5,  "5) Download                 ")
-        self.tabWidget.addTab(self.tab6,  "6) Filesystem               ")
-        self.tabWidget.addTab(self.tab8,  "7) Thumbnail                ")
-        self.tabWidget.addTab(self.tab9,  "8) Internet Shortcut        ")
+        self.tabWidget.addTab(self.tab1, "1) General                  ")
+        self.tabWidget.addTab(self.tab2, "2) Network                  ")
+        self.tabWidget.addTab(self.tab3, "3) Geo-restriction          ")
+        self.tabWidget.addTab(self.tab4, "4) Video Selection          ")
+        self.tabWidget.addTab(self.tab5, "5) Download                 ")
+        self.tabWidget.addTab(self.tab6, "6) Filesystem               ")
+        self.tabWidget.addTab(self.tab8, "7) Thumbnail                ")
+        self.tabWidget.addTab(self.tab9, "8) Internet Shortcut        ")
         self.tabWidget.addTab(self.tab10, "9) Verbosity and Simulation")
         self.tabWidget.addTab(self.tab11, "10) Workarounds            ")
         self.tabWidget.addTab(self.tab11, "11) Video Format            ")
@@ -230,7 +290,7 @@ class MyMainWindow(QMainWindow):
         self.frameButtons.setLayout(self.layoutButtons)
         self.layoutButtons.addWidget(self.buttonDownload)
         self.layoutButtons.addWidget(self.buttonExit)
-        
+
         self.buttonHistory.setFixedSize(100, 30)
         self.buttonOpen.setFixedSize(100, 30)
         self.buttonLoad.setFixedSize(100, 30)
@@ -241,8 +301,6 @@ class MyMainWindow(QMainWindow):
 
         self.buttonExit.setToolTip("Exit the program.")
         self.buttonExit.setShortcut(QKeySequence("Ctrl+X"))
-
-        self.connectSignalsToSlots()
 
 
     def create_menu_bar(self) :
@@ -342,7 +400,8 @@ class MyMainWindow(QMainWindow):
 app = QApplication(sys.argv)
 
 window = MyMainWindow(app)
-window.setup()
+window.setupUI()
 window.show()
+window.applyStylesheet()
 
 sys.exit(app.exec())

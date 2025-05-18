@@ -19,21 +19,102 @@ from PyQt6.QtGui     import  QKeySequence
 from Options         import  listOptionsGeneral as listOptions;
 
 
+# * Dictionaries
+# ==============
+#
+# The class which is defined in this file, i.e. Tab1, deals with two
+# distinct types of dictionaries.
+#
+#   Type 1) : Dictionary of GUI widget specifications.
+#   --------------------------------------------------
+#
+#   --> dictionaryGuiSpecifications
+#
+#   This type of dictionary contains specifications which are used for
+#   the creation of GUI widgets.
+#
+#   For each one of the yt-dlp utility's command line options, this
+#   dictionary specifies what type of GUI control should be associated
+#   with it, along with a default value for that GUI control. In case
+#   it is not obvious, this type of dictionary uses the yt-dlp utility's
+#   command line options as the key to the dictionary.
+#
+#   This type of dictionary is important, as it tells this program what
+#   type of GUI control it should display on the screen in order to
+#   represent each of the yt-dlp command line options. As a result, every
+#   entry in the dictionaries defines an option-control-value triple of
+#   values.
+#
+#   This program makes use of 16 instances of this type of
+#   dictionary - one for each of the categories of yt-dlp command
+#   line options. These 16 dictionaries are defined in the file;
+#
+#     > Options.py
+#
+#   Every one of these option-control-value triple of values has the
+#   following form;
+#
+#     "-h, --help" : {"QCheckBox" : "Checked"}
+#
+#   In this case;
+#
+#     - the yt-dlp command line option       = "-h, --help"
+#     - the type of GUI control to use       = QCheckBox
+#     - the default value of the GUI control = Checked
+#
+#     > The control specifies the type of GUI control which should be
+#       used, i.e. a check box (QCheckBox) or a line edit (QLineEdit).
+#
+#      The dictionary that this tab needs to use is named;
+#
+#        > listOptionsGeneral
+#
+#      but is imported by this file using the alias;
+#
+#        > listOptions
+#
+#      The value which is returned from the dictionary, will
+#      itself be another dictionary and will be of one of the
+#      following forms;
+#
+#   {"QCheckBox" : "Checked"}
+#   {"QLineEdit" : "ALIASES OPTIONS"}
+#
+#
+#   Type 2) Dictionary of GUI widgets.
+#   ----------------------------------
+#
+#   --> dictionaryGuiWidgets
+#
+#   This type of dictionary contains the GUI widgets that have been
+#   created in response to the specifications.
+
+
+# ========================
 # Class : Tab1
 # ========================
+#
+# Parent class : QScrollArea
+#
+# ------------------------
+
 
 class Tab1(QScrollArea):
 
-    displayNumberOptions = False
-    useOldLayoutCode     = False
+    debug_populateDictionaryGuiWidgets = False
+    displayNumberOptions               = False
+    useOldLayoutCode                   = False
 
-    # Get a listing of all the keys in the dictionary.
+    mainWidgetTitle      = "Number of options = 28"
+
+    # Get a listing of all the keys in the GUI widget specifications
+    # dictionary.
     #
     # This will be returned as a Python list.
 
     keys = list(listOptions.keys())
 
-    controlDictionary = {}
+    dictionaryGuiWidgets = {}
 
 
     def __init__(self):
@@ -44,42 +125,44 @@ class Tab1(QScrollArea):
 
         # Create this class's top level widget and layout.
 
-        if self.displayNumberOptions :
+        self.createMainWidgetAndLayout()
 
-            self.groupBox   = QGroupBox("Number of options = 28")
+        # Create all the GUI labels and controls. Once this is done,
+        # populate the Control dictionary with them.
 
-        else :
-
-            self.groupBox = QGroupBox()
-
-        self.layoutGrid = QGridLayout()
-
-        # Create all the GUI controls and then populate the Control dictionary
-        # with them.
-
-        self.populateGuiControlsDictionary()
+        # self.populateGuiLabelAndControlDictionary()
+        self.populateDictionaryGuiWidgets()
 
 
     def setupUI(self):
 
-        # Additional steps required by this tab.
+        # Setup the widget which will be used as the main widget
+        # by this class.
 
-        # Set the layout for this tab and then add child widgets into
-        # this layout.
+        self.setupMainWidget()
 
-        # self.setLayout(self.layoutSelf)
+        # Set the main widget for this class.
 
-        # self.groupBox.setLayout(self.layoutSelf)
-
-        # self.layoutSelf.addWidget(self.groupBox)
-        # self.layoutSelf.addStretch()
-
-        self.setupGroupBox()
+        self.setWidget(self.mainWidget)
+        self.setWidgetResizable(True)
 
 
-    def populateGuiControlsDictionary(self) :
+    def createMainWidgetAndLayout(self) :
 
-        nameMethod = "Tab1::populateGuiControlsDictionary"
+        if self.displayNumberOptions :
+
+            self.mainWidget = QGroupBox(self.mainWidgetTitle)
+
+        else :
+
+            self.mainWidget = QGroupBox()
+
+        self.layoutGrid = QGridLayout()
+
+
+    def populateDictionaryGuiWidgets(self) :
+
+        nameMethod = "Tab1::populateDictionaryGuiWidgets"
 
 
         numKeys = len(self.keys)
@@ -106,9 +189,9 @@ class Tab1(QScrollArea):
 
             # Add this control into the dictionary of GUI controls.
 
-            self.controlDictionary[key] = control
+            self.dictionaryGuiWidgets[key] = control
 
-            numGuiControls = len(self.controlDictionary)
+            numGuiControls = len(self.dictionaryGuiWidgets)
 
             print("========================================")
             print("Key             = " + key)
@@ -118,12 +201,14 @@ class Tab1(QScrollArea):
             print("-----")
             print("Text in Control label = " + controlLabel.text())
             print("========================================")
-            print("Num elements in GUI control dictionary = " + str(len(self.controlDictionary)))
+            print("Num elements in GUI control dictionary = " + str(len(self.dictionaryGuiWidgets)))
             print("========================================")
 
-            # print("")
-            # print("Press Enter to continue... ", end="")
-            # input()
+            if self.debug_populateDictionaryGuiWidgets :
+
+                print("")
+                print("Press Enter to continue... ", end="")
+                input()
 
         # End of for loop.
 
@@ -135,47 +220,67 @@ class Tab1(QScrollArea):
 
         for key in self.keys :
 
-            control = self.controlDictionary[key]
+            control = self.dictionaryGuiWidgets[key]
 
             print(str(control))
 
         # End of for loop.
 
-        # print("")
-        # print("Press Enter to continue... ", end="")
-        # input()
+        if self.debug_populateDictionaryGuiWidgets:
+
+            print("")
+            print("Press Enter to continue... ", end="")
+            input()
 
         print(nameMethod + " : Exit")
 
 
-    def setupGroupBox(self) :
+    def setupMainWidget(self) :
+
+        # Set the layout for widget.
+        #
+        # We use a QVBoxLayout so that all of the child widgets get pushed
+        # to the top. We do this in case there aren't enough child widgets
+        # to fill out the layout properly.
+
+        self.layoutMainWidget = QVBoxLayout()
+
+        self.createFrameGridAndLayout()
 
         # Add the child widgets into this layout.
 
         self.addChildWidgetsToLayout()
 
-        # Set the layout for widget.
-        #
-        # We use a QVBoxLayout so that we can push all of the controls up.
 
-        vboxLayout = QVBoxLayout()
+    def createFrameGridAndLayout(self) :
 
         frameGrid  = QFrame()
         frameGrid.setObjectName("Tab1_frameGrid")
-        frameGrid.setStyleSheet("QFrame { border : none; margin-top: 0px; } QLabel { border : none; } QLineEdit { border : 1px; }")
-        self.groupBox.setStyleSheet("QGroupBox { border : none; margin-top: 0px; } QLineEdit { border : 1px; }")
+        frameGrid.setStyleSheet("""
+                                QFrame { border : none; margin-top: 0px; } 
+                                QLabel { border : none; }")  
+                                /* QLineEdit { border : 1px; }" */
+                                """)
 
-        self.groupBox.setLayout(vboxLayout)
+        self.mainWidget.setStyleSheet("""
+                                      QGroupBox
+                                      {
+                                        border : none;
+                                        margin-top: 0px;
+                                      }
+                                      QLineEdit
+                                      {
+                                        border : 1px;
+                                        /* background-color : orange; */
+                                      }
+                                      """)
 
-        vboxLayout.addWidget(frameGrid)
-        vboxLayout.addStretch()
+        self.mainWidget.setLayout(self.layoutMainWidget)
+
+        self.layoutMainWidget.addWidget(frameGrid)
+        self.layoutMainWidget.addStretch()
 
         frameGrid.setLayout(self.layoutGrid)
-
-        # Set the main widget for this class to be self.groupBox
-
-        self.setWidget(self.groupBox)
-        self.setWidgetResizable(True)
 
 
     def addChildWidgetsToLayout(self) :
@@ -198,9 +303,9 @@ class Tab1(QScrollArea):
 
         rowGridLayout = 0
 
-        for key in self.controlDictionary :
+        for key in self.dictionaryGuiWidgets :
 
-            control = self.controlDictionary[key]
+            control = self.dictionaryGuiWidgets[key]
 
             print("========================================")
             print("Key             = " + key)
@@ -222,11 +327,11 @@ class Tab1(QScrollArea):
 
         print("========================================")
         print("========================================")
-        print("Dictionary of controls", self.controlDictionary)
+        print("Dictionary of controls", self.dictionaryGuiWidgets)
         print("========================================")
         print("========================================")
 
-        # self.setWidget(self.groupBox)
+        # self.setWidget(self.mainWidget)
 
 
     def getNextControlLabel(self, key) :
@@ -260,51 +365,6 @@ class Tab1(QScrollArea):
 
         verbose = False
 
-
-        # * Dictionaries
-        #   ============
-        #
-        # The dictionaries for each of the tabs are defined in the file;
-        #
-        #   > Options.py
-        #
-        # The purpose of the dictionaries is to specify what type of GUI
-        # control should be associated with each of the yt-dlp utility's
-        # command line options.
-        #
-        # This is important, as it tells this program what GUI control it
-        # should display on the screen for each of the yt-dlp command line
-        # options. Thus, every entry in every one of these dictionaries
-        # defines an option-control-value triple of values
-        #
-        # To illustrate this point,
-        # consider the following example;
-        #
-        #   "-h, --help" : {"QCheckBox" : "Checked"}
-        #
-        # In this case;
-        #
-        #   - the yt-dlp command line option       = "-h, --help"
-        #   - the type of GUI control to use       = QCheckBox
-        #   - the initial value of the GUI control = Checked
-        #
-        # > The control specifies the type of GUI control which should be
-        #   used
-        #
-        # The dictionary that this tab needs to use is named;
-        #
-        #   > listOptionsGeneral
-        #
-        # but is imported by this file using the alias;
-        #
-        #   > listOptions
-        #
-        # The value which is returned from the dictionary, will
-        # itself be another dictionary and will be of one of the
-        # following forms;
-        #
-        #   {"QCheckBox" : "Checked"}
-        #   {"QLineEdit" : "ALIASES OPTIONS"}
 
         controlTypeAndValue = listOptions[key]
 
@@ -360,6 +420,25 @@ class Tab1(QScrollArea):
                 print("<<<<<<<<<<")
 
             control = QLineEdit(controlValue)
+            control.setStyleSheet("""
+                                  QLineEdit 
+                                  {
+                                    /* background-color : green; */
+                                    border           : 1px solid; 
+                                  }
+                                  """)
+
+        self.mainWidget.setStyleSheet("""
+                                      QGroupBox
+                                      {
+                                        border : none; margin-top: 0px;
+                                      }
+                                      QLineEdit
+                                      {
+                                        border : 1px;
+                                        /* background-color : orange; */ 
+                                      }
+                                      """)
 
 
         return (controlLabel, control)
