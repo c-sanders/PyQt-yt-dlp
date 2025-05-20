@@ -16,6 +16,8 @@ from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget,
                              QFileDialog,  QScrollArea, QGroupBox)
 from PyQt6.QtGui     import  QKeySequence
 
+import json
+
 from Options         import  listOptionsGeneral as listOptions;
 
 
@@ -444,9 +446,10 @@ class Tab1(QScrollArea):
         return (controlLabel, control)
 
 
-    def processJSON(self, dataJSON, optionsCategory):
+    def processJsonToDictionary(self, dataJSON, optionsCategory):
+    # def getDictionaryFromJson
 
-        nameMethod = "Tab1::processJSON" 
+        nameMethod = "Tab1::processJsonToDictionary"
 
 
         print(nameMethod + " : Enter")
@@ -454,8 +457,11 @@ class Tab1(QScrollArea):
         # Retrieve the child element from the JSON.
 
         try:
+
             dataOptions = dataJSON[optionsCategory]
+
         except :
+
             print("Caught an exception : Probably no " + optionsCategory + " element in JSON")
 
         print("****************************************")
@@ -559,5 +565,63 @@ class Tab1(QScrollArea):
             except:
 
                 print("The current key does not appear to be used in the JSON config.")
+
+        print(nameMethod + " : Exit")
+
+
+    def processDictionaryToJson(self) :
+
+        nameMethod = "Tab1::processDictionaryToJson"
+
+
+        print(nameMethod + " : Enter")
+
+        tempDict = {}
+
+        for key in self.dictionaryGuiWidgets :
+
+            value = self.dictionaryGuiWidgets[key]
+
+            # Get the label and GUI value associated with this key.
+
+            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+            print("Key   = " + key)
+
+            tempSubDict = {}
+
+            if value.inherits("QLineEdit") :
+
+                print("Widget is of type QLineEdit")
+                print("Value = ", value.text())
+
+                tempSubDict["QLineEdit"] = value.text()
+                tempDict[key] = tempSubDict
+
+            else :
+
+                print("Widget is of type QCheckBox")
+
+                value = value.isChecked()
+
+                if value :
+
+                    print("Value = Checked")
+
+                    tempSubDict["QCheckBox"] = "Checked"
+
+                else :
+
+                    print("Value = Unchecked")
+
+                    tempSubDict["QCheckBox"] = "Unchecked"
+
+                tempDict[key] = tempSubDict
+
+            print(json.dumps(tempDict, indent = 0))  # Pretty print JSON
+            # print(json.dumps(d, sort_keys=True))  # Sorted keys
+            # print(json.dumps(d, ensure_ascii=False))  # Non-ASCII encoding
+            # print(json.dumps([{k: d[k]} for k in d]))  # Convert to JSON array format
+
+            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
         print(nameMethod + " : Exit")
